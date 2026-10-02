@@ -2,12 +2,16 @@ name: Generate Snake
 
 on:
   schedule:
-    # Executa a cada 6 horas
     - cron: "0 */6 * * *"
   workflow_dispatch:
   push:
     branches:
       - main
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -21,11 +25,12 @@ jobs:
         id: snake-gif
         with:
           github_user_name: ${{ github.repository_owner }}
+          # Ajuste para renderizar apenas os blocos baseados estritamente nas contribuições reais
           outputs: |
             dist/github-contribution-grid-snake.svg
             dist/github-contribution-grid-snake-dark.svg?palette=github-dark
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
 
       - name: Push snake to output branch
         uses: crazy-max/ghaction-github-pages@v3
@@ -33,4 +38,4 @@ jobs:
           target_branch: output
           build_dir: dist
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
